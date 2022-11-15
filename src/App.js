@@ -2,14 +2,10 @@ import * as React from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
 import { Container } from '@mui/system';
-import FormHelperText from '@mui/material/FormHelperText';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import InputLabel from '@mui/material/InputLabel';
 import { useState, useEffect } from 'react';
 import { TextField, CssBaseline } from '@mui/material';
+import axios from 'axios';
 
 function App() {
    const [fullname, setFullname] = useState('');
@@ -41,6 +37,23 @@ function App() {
       fetchData();
    }, []);
 
+   const createUser = async () =>
+      await axios
+         .post(URL, {
+            fullname: fullname,
+            email: email,
+            password: password,
+            occupations,
+            states,
+         })
+         .then(({ status }) => status);
+
+   const handleSubmit = async (e) => {
+      e.preventDefault();
+      createUser();
+      alert('Form submitted successfully!');
+   };
+
    return (
       <>
          <Container component='main' maxWidth='xs'>
@@ -53,16 +66,19 @@ function App() {
                   alignItems: 'center',
                }}
             >
-               <Box component='form' autoComplete='off'>
+               <Box
+                  component='form'
+                  onSubmit={handleSubmit}
+                  autoComplete='off'
+               >
                   <TextField
                      margin='normal'
                      fullWidth
                      required
-                     id='outlined'
+                     id='outlined-fullname'
                      label='Full Name'
                      value={fullname}
                      onChange={(e) => {
-                        console.log(e.target.value);
                         setFullname(e.target.value);
                      }}
                   ></TextField>
@@ -70,11 +86,10 @@ function App() {
                      margin='normal'
                      fullWidth
                      required
-                     id='outlined'
+                     id='outlined-email'
                      label='Email'
                      value={email}
                      onChange={(e) => {
-                        console.log(e.target.value);
                         setEmail(e.target.value);
                      }}
                   ></TextField>
@@ -82,18 +97,17 @@ function App() {
                      margin='normal'
                      fullWidth
                      required
-                     id='outlined'
+                     id='outlined-password'
                      type='password'
                      label='Password'
                      value={password}
                      onChange={(e) => {
-                        console.log(e.target.value);
                         setPassword(e.target.value);
                      }}
                   ></TextField>
 
                   <TextField
-                     margin='auto'
+                     margin='dense'
                      sx={{ mb: 3, mt: 2 }}
                      fullWidth
                      id='outlined-uncontrolled'
@@ -101,7 +115,6 @@ function App() {
                      label='Occupation'
                      defaultValue='Head of Shrubbery'
                      onChange={(e) => {
-                        console.log(e.target.value);
                         setValue(e.target.value);
                      }}
                   >
@@ -115,13 +128,12 @@ function App() {
                      ))}
                   </TextField>
                   <TextField
-                     margin='auto'
+                     margin='dense'
                      id='outlined-uncontrolled'
                      select
                      label='State'
                      defaultValue='Alabama'
                      onChange={(e) => {
-                        console.log(e.target.value);
                         setValue(e.target.value);
                      }}
                   >
@@ -133,6 +145,8 @@ function App() {
                   </TextField>
                   <Button
                      type='submit'
+                     id='outlined'
+                     aria-label='Submit'
                      variant='contained'
                      fullWidth
                      sx={{ mt: 3, mb: 2 }}
